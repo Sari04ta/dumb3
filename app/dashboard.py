@@ -2,6 +2,62 @@
 import streamlit as st
 import pandas as pd
 
+
+import sys
+import os
+
+# Add project root to PYTHONPATH
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(ROOT_DIR)
+
+import streamlit as st
+import pandas as pd
+
+from utils.data_utils import load_restaurant_data, get_restaurant_options
+from utils.analysis_utils import (
+    compute_all_metrics,
+    get_overview,
+    get_competitor_view,
+    get_sentiment_view,
+    get_delivery_view,
+    get_price_view,
+    get_menu_popularity_view,
+)
+
+st.set_page_config(
+    page_title="AI Agent — Restaurant Market Analysis",
+    layout="wide",
+)
+
+st.title("AI Agent — Restaurant Market Analysis")
+st.caption(
+    "Upload a restaurant reviews CSV to analyse performance, competition, delivery and pricing, "
+    "and customer satisfaction — then ask an AI agent for insights."
+)
+
+with st.sidebar:
+    st.header("1. Upload data")
+    uploaded_file = st.file_uploader(
+        "Restaurant reviews CSV",
+        type=["csv"],
+    )
+
+if uploaded_file:
+    df = load_restaurant_data(uploaded_file)
+
+    st.success("Data loaded successfully!")
+
+    overview = get_overview(df)
+    st.subheader("Overview")
+    st.write(overview)
+
+    st.subheader("Sentiment Analysis")
+    st.write(get_sentiment_view(df))
+
+    st.subheader("Competition Analysis")
+    st.write(get_competitor_view(df))
+
+
 from utils.data_utils import load_restaurant_data, get_restaurant_options
 from utils.analysis_utils import (
     compute_all_metrics,
